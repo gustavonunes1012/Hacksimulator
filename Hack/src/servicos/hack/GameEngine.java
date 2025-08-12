@@ -9,42 +9,45 @@ import java.util.HashMap;
 import modelos.hack.Usuario;
 
 public class GameEngine {
-    // Classe GameEngine corretamente estruturada
-        private Jogador jogador;
-        private List<Missao> missoes;
-        private List<Missao> historicoMissoes = new ArrayList<>();
-        private Scanner scanner;
-        private HashMap<String, Usuario> usuarios = new HashMap<>(); // usuario -> Usuario
+    private Jogador jogador;
+    private List<Missao> missoes;
+    private List<Missao> historicoMissoes = new ArrayList<>();
+    private Scanner scanner;
+    private HashMap<String, Usuario> usuarios = new HashMap<>();
 
-        public GameEngine(Jogador jogador) {
-            this.jogador = jogador;
-            this.missoes = new ArrayList<>();
-            this.scanner = new Scanner(System.in);
-        }
+    public GameEngine(Jogador jogador) {
+        this.jogador = jogador;
+        this.missoes = new ArrayList<>();
+        this.scanner = new Scanner(System.in);
+    }
 
-        public void telaInicial() {
-            System.out.println("=== Bem-vindo ao HackSimulator ===");
-            while (true) {
-                System.out.println("1 - Login");
-                System.out.println("2 - Cadastro");
-                System.out.println("3 - Sair");
-                System.out.print("Escolha uma opção: ");
-                String op = scanner.nextLine();
-                if (op.equals("1")) {
-                    if (login()) {
-                        startGame();
-                        break;
-                    }
-                } else if (op.equals("2")) {
-                    cadastro();
-                } else if (op.equals("3")) {
-                    System.out.println("Saindo...");
+    public void telaInicial() {
+        System.out.println("\n==============================");
+        System.out.println(" Bem-vindo ao HackSimulator ");
+        System.out.println("==============================");
+        while (true) {
+            System.out.println("1 - Login");
+            System.out.println("2 - Cadastro");
+            System.out.println("3 - Sair");
+            System.out.print("Escolha uma opção: ");
+            String op = scanner.nextLine();
+            if (op.equals("1")) {
+                if (login()) {
+                    startGame();
                     break;
-                } else {
-                    System.out.println("Opção inválida.");
                 }
+            } else if (op.equals("2")) {
+                cadastro();
+            } else if (op.equals("3")) {
+                System.out.println("Saindo...");
+                break;
+            } else {
+                System.out.println("Opção inválida.");
             }
         }
+    }
+
+
 
         public void cadastro() {
             System.out.println("=== Cadastro de Jogador ===");
@@ -81,11 +84,11 @@ public class GameEngine {
             return false;
         }
 
-        public void startGame() {
-            System.out.println("Bem-vindo ao HackSimulator, " + jogador.getNome() + "!");
-            carregarMissoes();
-            mostrarMenu();
-        }
+    public void startGame() {
+        System.out.println("\nOlá, " + jogador.getNome() + "! Seja bem-vindo ao seu painel de hacker.");
+        carregarMissoes();
+        mostrarMenu();
+    }
 
         public void carregarMissoes() {
             System.out.println("Carregando missões...");
@@ -103,34 +106,33 @@ public class GameEngine {
             System.out.println("Missões carregadas com sucesso!");
         }
 
-        public void mostrarMenu() {
-            while (true) {
-                System.out.println("\n=== Menu Principal ===");
-                System.out.println("Olá, " + jogador.getNome() + "! Seja bem-vindo ao seu painel de hacker.");
-                System.out.println("1 - Listar missões disponíveis");
-                System.out.println("2 - Exibir status do jogador");
-                System.out.println("3 - Descansar / Recuperar energia");
-                System.out.println("4 - Sair");
-                System.out.print("Escolha uma opção: ");
-                String input = scanner.nextLine();
-                switch (input) {
-                    case "1":
-                        listarMissoes();
-                        break;
-                    case "2":
-                        jogador.exibeStatus();                    
-                        break;
-                    case "3":
-                        descansar();
-                        break;
-                    case "4":
-                        System.out.println("Saindo...");
-                        return;
-                    default:
-                        System.out.println("Opção inválida. Tente novamente.");
-                }
+    public void mostrarMenu() {
+        while (true) {
+            System.out.println("\n=== Menu Principal ===");
+            System.out.println("1 - Listar missões disponíveis");
+            System.out.println("2 - Exibir status do jogador");
+            System.out.println("3 - Descansar / Recuperar energia");
+            System.out.println("4 - Sair");
+            System.out.print("Escolha uma opção: ");
+            String input = scanner.nextLine();
+            switch (input) {
+                case "1":
+                    listarMissoes();
+                    break;
+                case "2":
+                    jogador.exibeStatus();
+                    break;
+                case "3":
+                    descansar();
+                    break;
+                case "4":
+                    System.out.println("Saindo...");
+                    return;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
             }
         }
+    }
     private void listarMissoes() {
         System.out.println("\n=== Missões Disponíveis ===");
         for (int i = 0; i < missoes.size(); i++) {
@@ -212,9 +214,12 @@ public class GameEngine {
     }
 
     private void atualizarJogador(Missao missao) {
-    int xpGanho = missao.getDificuldade() * 20;
+        int xpGanho = missao.getDificuldade() * 20;
+        int moedasGanhas = missao.getDificuldade() * 10;
         jogador.setExp(jogador.getExp() + xpGanho);
+        jogador.setOzzyCoin(jogador.getOzzyCoin() + moedasGanhas);
         System.out.println("Você ganhou " + xpGanho + " de experiência!");
+        System.out.println("Você ganhou " + moedasGanhas + " Ozzy Coins!");
         int nivelAtual = jogador.getNivel();
         int xpParaProximoNivel = 100 + (nivelAtual - 1) * 50;
         while (jogador.getExp() >= xpParaProximoNivel) {

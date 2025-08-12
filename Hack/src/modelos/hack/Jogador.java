@@ -5,6 +5,14 @@ public class Jogador {
     private int nivel;
     private int exp;
     private int energia;
+    private int ozzyCoin;
+    public int getOzzyCoin() {
+        return ozzyCoin;
+    }
+
+    public void setOzzyCoin(int ozzyCoin) {
+        this.ozzyCoin = ozzyCoin;
+    }
     public Jogador(String nome) {
     this.nome = nome;
     
@@ -38,9 +46,10 @@ public class Jogador {
     }
     public void exibeStatus() {
         System.out.println("***STATUS DO JOGADOR***");
-        System.out.println("Nome: "+nome);
-        System.out.println("Nivel: "+nivel);
-        System.out.println("Experiencia: "+exp);
-        System.out.println("Energia: "+energia);
+        System.out.println("Nome: " + nome);
+        System.out.println("Nível: " + nivel);
+        System.out.println("Experiência: " + exp);
+        System.out.println("Energia: " + energia);
+        System.out.println("Ozzy Coins: " + ozzyCoin);
     }
 }
