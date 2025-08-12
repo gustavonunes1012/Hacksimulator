@@ -112,7 +112,8 @@ public class GameEngine {
             System.out.println("1 - Listar missões disponíveis");
             System.out.println("2 - Exibir status do jogador");
             System.out.println("3 - Descansar / Recuperar energia");
-            System.out.println("4 - Sair");
+            System.out.println("4 - Loja de Itens");
+            System.out.println("5 - Sair");
             System.out.print("Escolha uma opção: ");
             String input = scanner.nextLine();
             switch (input) {
@@ -126,11 +127,58 @@ public class GameEngine {
                     descansar();
                     break;
                 case "4":
+                    loja();
+                    break;
+                case "5":
                     System.out.println("Saindo...");
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
+        }
+    }
+    private void loja() {
+        System.out.println("\n=== Loja de Itens ===");
+        System.out.println("Seu saldo: " + jogador.getOzzyCoin() + " Ozzy Coins");
+        System.out.println("1 - Energia extra (+30) - 30 Ozzy Coins");
+        System.out.println("2 - Upgrade de nível (+1) - 100 Ozzy Coins");
+        System.out.println("3 - Ferramenta de hack (chance de sucesso +20%) - 50 Ozzy Coins");
+        System.out.println("0 - Voltar");
+        System.out.print("Escolha o item para comprar: ");
+        String escolha = scanner.nextLine();
+        switch (escolha) {
+            case "1":
+                if (jogador.getOzzyCoin() >= 30) {
+                    jogador.setEnergia(Math.min(jogador.getEnergia() + 30, 100));
+                    jogador.setOzzyCoin(jogador.getOzzyCoin() - 30);
+                    System.out.println("Você comprou Energia extra! Energia atual: " + jogador.getEnergia());
+                } else {
+                    System.out.println("Saldo insuficiente.");
+                }
+                break;
+            case "2":
+                if (jogador.getOzzyCoin() >= 100) {
+                    jogador.setNivel(jogador.getNivel() + 1);
+                    jogador.setOzzyCoin(jogador.getOzzyCoin() - 100);
+                    System.out.println("Você comprou Upgrade de nível! Nível atual: " + jogador.getNivel());
+                } else {
+                    System.out.println("Saldo insuficiente.");
+                }
+                break;
+            case "3":
+                if (jogador.getOzzyCoin() >= 50) {
+                    jogador.setOzzyCoin(jogador.getOzzyCoin() - 50);
+                    System.out.println("Você comprou Ferramenta de hack! Sua chance de sucesso aumentou nas próximas missões.");
+                    // Ativa bônus temporário (implementar lógica de uso nas missões)
+                } else {
+                    System.out.println("Saldo insuficiente.");
+                }
+                break;
+            case "0":
+                System.out.println("Voltando ao menu principal...");
+                break;
+            default:
+                System.out.println("Opção inválida.");
         }
     }
     private void listarMissoes() {
