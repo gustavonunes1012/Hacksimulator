@@ -1,3 +1,4 @@
+    
 package servicos.hack;
 import utilidades.hack.Util;
 import modelos.hack.Jogador;
@@ -9,6 +10,14 @@ import java.util.HashMap;
 import modelos.hack.Usuario;
 
 public class GameEngine {
+    private void adicionarMissoesEspeciais() {
+        int nivelMinimo = 5;
+        if (jogador.getNivel() >= nivelMinimo) {
+            missoes.add(new Missao("Hackear o Pentágono", new modelos.hack.Alvo("Pentágono", "198.51.100.1", 10), 10, 1000, false));
+            missoes.add(new Missao("Invadir a Bolsa de Valores Mundial", new modelos.hack.Alvo("Bolsa Mundial", "203.0.113.5", 9), 9, 800, false));
+            missoes.add(new Missao("Desativar satélite militar", new modelos.hack.Alvo("Satélite Militar", "192.0.2.50", 10), 10, 1200, false));
+        }
+    }
     private Jogador jogador;
     private List<Missao> missoes;
     private List<Missao> historicoMissoes = new ArrayList<>();
@@ -95,19 +104,20 @@ public class GameEngine {
     }
 
         public void carregarMissoes() {
-            System.out.println("Carregando missões...");
-            missoes.clear();
-            missoes.add(new Missao("Invadir o Servidor Alpha e coletar dados sensíveis", new modelos.hack.Alvo("Servidor Alpha", "192.168.1.10", 5), 3, 100, false));
-            missoes.add(new Missao("Hackear o Banco Central e transferir fundos", new modelos.hack.Alvo("Banco Central", "10.0.0.1", 8), 5, 250, false));
-            missoes.add(new Missao("Obter acesso ao sistema de câmeras da cidade", new modelos.hack.Alvo("Central de Câmeras", "172.16.0.5", 4), 2, 80, false));
-            missoes.add(new Missao("Desativar firewall de empresa concorrente", new modelos.hack.Alvo("Firewall CorpX", "192.168.2.20", 6), 4, 120, false));
-            missoes.add(new Missao("Roubar dados de pesquisa de laboratório secreto", new modelos.hack.Alvo("Lab Secreto", "10.10.10.10", 7), 6, 300, false));
-            missoes.add(new Missao("Interceptar comunicações de políticos", new modelos.hack.Alvo("Gabinete Político", "192.168.100.100", 5), 3, 110, false));
-            missoes.add(new Missao("Invadir sistema de votação eletrônica", new modelos.hack.Alvo("Urna Eletrônica", "10.0.0.50", 9), 7, 400, false));
-            missoes.add(new Missao("Obter acesso ao servidor de streaming", new modelos.hack.Alvo("Servidor Streaming", "172.16.1.1", 3), 2, 70, false));
-            missoes.add(new Missao("Sabotar sistema de controle de energia", new modelos.hack.Alvo("Usina Elétrica", "192.168.3.33", 8), 6, 320, false));
-            missoes.add(new Missao("Descobrir senha do CEO da MegaCorp", new modelos.hack.Alvo("MegaCorp CEO", "10.1.1.1", 4), 3, 90, false));
-            System.out.println("Missões carregadas com sucesso!");
+    System.out.println("Carregando missões...");
+    missoes.clear();
+    missoes.add(new Missao("Invadir o Servidor Alpha e coletar dados sensíveis", new modelos.hack.Alvo("Servidor Alpha", "192.168.1.10", 5), 3, 100, false));
+    missoes.add(new Missao("Hackear o Banco Central e transferir fundos", new modelos.hack.Alvo("Banco Central", "10.0.0.1", 8), 5, 250, false));
+    missoes.add(new Missao("Obter acesso ao sistema de câmeras da cidade", new modelos.hack.Alvo("Central de Câmeras", "172.16.0.5", 4), 2, 80, false));
+    missoes.add(new Missao("Desativar firewall de empresa concorrente", new modelos.hack.Alvo("Firewall CorpX", "192.168.2.20", 6), 4, 120, false));
+    missoes.add(new Missao("Roubar dados de pesquisa de laboratório secreto", new modelos.hack.Alvo("Lab Secreto", "10.10.10.10", 7), 6, 300, false));
+    missoes.add(new Missao("Interceptar comunicações de políticos", new modelos.hack.Alvo("Gabinete Político", "192.168.100.100", 5), 3, 110, false));
+    missoes.add(new Missao("Invadir sistema de votação eletrônica", new modelos.hack.Alvo("Urna Eletrônica", "10.0.0.50", 9), 7, 400, false));
+    missoes.add(new Missao("Obter acesso ao servidor de streaming", new modelos.hack.Alvo("Servidor Streaming", "172.16.1.1", 3), 2, 70, false));
+    missoes.add(new Missao("Sabotar sistema de controle de energia", new modelos.hack.Alvo("Usina Elétrica", "192.168.3.33", 8), 6, 320, false));
+    missoes.add(new Missao("Descobrir senha do CEO da MegaCorp", new modelos.hack.Alvo("MegaCorp CEO", "10.1.1.1", 4), 3, 90, false));
+    adicionarMissoesEspeciais();
+    System.out.println("Missões carregadas com sucesso!");
         }
 
     public void mostrarMenu() {
@@ -222,8 +232,10 @@ public class GameEngine {
         System.out.println("\n=== Missões Disponíveis ===");
         for (int i = 0; i < missoes.size(); i++) {
             Missao m = missoes.get(i);
-            System.out.printf("%d - %s (Dificuldade: %d) - Status: %s\n", i + 1,
-                    m.getDescricao(), m.getDificuldade(),
+            String tipo = "";
+            if (m.getDificuldade() >= 9) tipo = " [ESPECIAL]";
+            System.out.printf("%d - %s%s (Dificuldade: %d) - Status: %s\n", i + 1,
+                    m.getDescricao(), tipo, m.getDificuldade(),
                     m.isMissaoCompleta() ? "COMPLETA" : "PENDENTE");
         }
         System.out.print("Escolha o número da missão para iniciar ou 0 para voltar: ");
@@ -241,6 +253,10 @@ public class GameEngine {
             return;
         }
         Missao selecionada = missoes.get(opcao - 1);
+        if (selecionada.getDificuldade() >= 9 && jogador.getNivel() < 5) {
+            System.out.println("Essa missão especial só pode ser acessada por jogadores de nível 5 ou superior.");
+            return;
+        }
         iniciarMissao(selecionada);
     }
 
