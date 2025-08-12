@@ -117,7 +117,8 @@ public class GameEngine {
             System.out.println("2 - Exibir status do jogador");
             System.out.println("3 - Descansar / Recuperar energia");
             System.out.println("4 - Loja de Itens");
-            System.out.println("5 - Sair");
+            System.out.println("5 - Evoluir habilidades");
+            System.out.println("6 - Sair");
             System.out.print("Escolha uma opção: ");
             String input = scanner.nextLine();
             switch (input) {
@@ -134,12 +135,43 @@ public class GameEngine {
                     loja();
                     break;
                 case "5":
+                    evoluirHabilidades();
+                    break;
+                case "6":
                     System.out.println("Saindo...");
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
         }
+    }
+    private void evoluirHabilidades() {
+        Util.limparTela();
+        System.out.println(Util.destaque("Evoluir Habilidades"));
+        jogador.exibeHabilidades();
+        System.out.println("Escolha a habilidade para evoluir:");
+        System.out.println("1 - Hacking");
+        System.out.println("2 - Engenharia Social");
+        System.out.println("3 - Criptografia");
+        System.out.println("0 - Voltar");
+        String escolha = scanner.nextLine();
+        String habilidade = "";
+        switch (escolha) {
+            case "1": habilidade = "hacking"; break;
+            case "2": habilidade = "engenhariaSocial"; break;
+            case "3": habilidade = "criptografia"; break;
+            case "0": return;
+            default:
+                System.out.println("Opção inválida.");
+                return;
+        }
+        boolean evoluiu = jogador.evoluirHabilidade(habilidade);
+        if (evoluiu) {
+            System.out.println("Habilidade evoluída com sucesso!");
+        } else {
+            System.out.println("Ozzy Coins insuficientes para evoluir.");
+        }
+        Util.pausa(1);
     }
     private void loja() {
     Util.limparTela();
@@ -224,6 +256,7 @@ public class GameEngine {
     System.out.println(Util.destaque("Tentando atacar o alvo..."));
         boolean respostaCorreta = false;
         int dificuldade = missao.getDificuldade();
+        
         if (dificuldade <= 3) {
             int a = 2 * dificuldade;
             int b = dificuldade + 3;
@@ -231,7 +264,8 @@ public class GameEngine {
             String tentativa = scanner.nextLine();
             respostaCorreta = tentativa.equals(String.valueOf(a + b));
         } else if (dificuldade <= 6) {
-            String codigo = Util.gerarCodigo(4);
+            int bonusES = jogador.getEngenhariaSocial() - 1;
+            String codigo = Util.gerarCodigo(4 - Math.min(bonusES, 2)); // Reduz tamanho do código
             System.out.println("Desafio intermediário: Digite o código exibido: " + codigo);
             String tentativa = scanner.nextLine();
             respostaCorreta = tentativa.trim().equalsIgnoreCase(codigo);
@@ -241,7 +275,13 @@ public class GameEngine {
             String tentativa = scanner.nextLine();
             respostaCorreta = tentativa.trim().equalsIgnoreCase(codigo);
         }
+        
         int energiaPerdida = 10 + dificuldade * 2;
+        if (dificuldade > 6) {
+            int bonusCripto = jogador.getCriptografia() - 1;
+            energiaPerdida -= bonusCripto * 3;
+            if (energiaPerdida < 5) energiaPerdida = 5;
+        }
         jogador.setEnergia(jogador.getEnergia() - energiaPerdida);
         System.out.println("Você perdeu " + energiaPerdida + " de energia ao tentar a missão.");
         if (jogador.getEnergia() <= 0) {
@@ -264,6 +304,8 @@ public class GameEngine {
     int nivelJogador = jogador.getNivel();
     int dificuldade = missao.getDificuldade();
     double probabilidade = 0.5 + 0.05 * (nivelJogador - dificuldade);
+    
+    probabilidade += 0.03 * (jogador.getHacking() - 1);
     if (probabilidade < 0.1) probabilidade = 0.1;
     if (probabilidade > 0.95) probabilidade = 0.95;
     double resultado = Math.random();
