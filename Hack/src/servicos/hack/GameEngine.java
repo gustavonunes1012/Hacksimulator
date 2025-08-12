@@ -24,11 +24,19 @@ public class GameEngine {
     }
 
     private void carregarMissoes() {
-        System.out.println("Carregando missões...");
-        modelos.hack.Alvo alvo1 = new modelos.hack.Alvo("Servidor Alpha", "192.168.1.10", 5);
-        Missao m1 = new Missao("Invadir o Servidor Alpha e coletar dados sensíveis", alvo1, 3, 100, false);
-        missoes.add(m1);
-        System.out.println("Missões carregadas com sucesso!");
+    System.out.println("Carregando missões...");
+    missoes.clear();
+    missoes.add(new Missao("Invadir o Servidor Alpha e coletar dados sensíveis", new modelos.hack.Alvo("Servidor Alpha", "192.168.1.10", 5), 3, 100, false));
+    missoes.add(new Missao("Hackear o Banco Central e transferir fundos", new modelos.hack.Alvo("Banco Central", "10.0.0.1", 8), 5, 250, false));
+    missoes.add(new Missao("Obter acesso ao sistema de câmeras da cidade", new modelos.hack.Alvo("Central de Câmeras", "172.16.0.5", 4), 2, 80, false));
+    missoes.add(new Missao("Desativar firewall de empresa concorrente", new modelos.hack.Alvo("Firewall CorpX", "192.168.2.20", 6), 4, 120, false));
+    missoes.add(new Missao("Roubar dados de pesquisa de laboratório secreto", new modelos.hack.Alvo("Lab Secreto", "10.10.10.10", 7), 6, 300, false));
+    missoes.add(new Missao("Interceptar comunicações de políticos", new modelos.hack.Alvo("Gabinete Político", "192.168.100.100", 5), 3, 110, false));
+    missoes.add(new Missao("Invadir sistema de votação eletrônica", new modelos.hack.Alvo("Urna Eletrônica", "10.0.0.50", 9), 7, 400, false));
+    missoes.add(new Missao("Obter acesso ao servidor de streaming", new modelos.hack.Alvo("Servidor Streaming", "172.16.1.1", 3), 2, 70, false));
+    missoes.add(new Missao("Sabotar sistema de controle de energia", new modelos.hack.Alvo("Usina Elétrica", "192.168.3.33", 8), 6, 320, false));
+    missoes.add(new Missao("Descobrir senha do CEO da MegaCorp", new modelos.hack.Alvo("MegaCorp CEO", "10.1.1.1", 4), 3, 90, false));
+    System.out.println("Missões carregadas com sucesso!");
     }
 
     private void mostrarMenu() {
