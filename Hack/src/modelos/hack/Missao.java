@@ -1,12 +1,12 @@
 package modelos.hack;
 
-public class Missoes {
+public class Missao {
     private String descricao;
     private Alvo alvo;
     private int dificuldade;
     private int recompensaExp;
     private boolean missaoCompleta;
-    public Missoes(String descricao, Alvo alvo, int dificuldade, int recompensaExp, boolean missaoCompleta) {
+    public Missao(String descricao, Alvo alvo, int dificuldade, int recompensaExp, boolean missaoCompleta) {
         this.descricao = descricao;
         this.alvo = alvo;
         this.dificuldade = dificuldade;

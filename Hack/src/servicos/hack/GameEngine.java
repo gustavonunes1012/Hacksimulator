@@ -36,7 +36,8 @@ public class GameEngine {
             System.out.println("\n=== Menu Principal ===");
             System.out.println("1 - Listar missões disponíveis");
             System.out.println("2 - Exibir status do jogador");
-            System.out.println("3 - Sair");
+            System.out.println("3 - Descansar / Recuperar energia");
+            System.out.println("4 - Sair");
             System.out.print("Escolha uma opção: ");
             String input = scanner.nextLine();
             switch (input) {
@@ -44,11 +45,15 @@ public class GameEngine {
                     listarMissoes();
                     break;
                 case "2":
-                    jogador.exibirStatus();
+jogador.exibeStatus();                    
                     break;
                 case "3":
-                    System.out.println("Saindo do jogo. Até mais!");
+                    descansar();
+                    break;
+                    case "4":
+                    System.out.println("Saindo...");
                     return;
+                
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
@@ -60,7 +65,7 @@ public class GameEngine {
         for (int i = 0; i < missoes.size(); i++) {
             Missao m = missoes.get(i);
             System.out.printf("%d - %s (Dificuldade: %d) - Status: %s\n", i + 1,
-                    m.getDescricao(), m.getNivelDificuldade(),
+                    m.getDescricao(), m.getDificuldade(),
                     m.isMissaoCompleta() ? "COMPLETA" : "PENDENTE");
         }
         System.out.print("Escolha o número da missão para iniciar ou 0 para voltar: ");
@@ -87,7 +92,7 @@ public class GameEngine {
             return;
         }
         System.out.println("\nIniciando missão:");
-        missao.exibirMissao();
+        missao.exibeMissao();
         System.out.println("\nTentando atacar o alvo...");
         boolean sucesso = executarAtaque(missao);
         if (sucesso) {
@@ -101,19 +106,29 @@ public class GameEngine {
 
     private boolean executarAtaque(Missao missao) {
         int chanceSucesso = jogador.getNivel() * 10;
-        int dificuldade = missao.getNivelDificuldade() * 10;
+        int dificuldade = missao.getDificuldade() * 10;
         int resultado = (int) (Math.random() * 100);
         return resultado + chanceSucesso >= dificuldade;
     }
 
     private void atualizarJogador(Missao missao) {
-        int xpGanho = missao.getRecompensaXP();
-        jogador.setExperiencia(jogador.getExperiencia() + xpGanho);
+        int xpGanho = missao.getRecompensaExp();
+        jogador.setExp(jogador.getExp() + xpGanho);
         System.out.println("Você ganhou " + xpGanho + " de experiência!");
-        while (jogador.getExperiencia() >= 100) {
+        while (jogador.getExp() >= 100) {
             jogador.setNivel(jogador.getNivel() + 1);
-            jogador.setExperiencia(jogador.getExperiencia() - 100);
+            jogador.setExp(jogador.getExp() - 100);
             System.out.println("Parabéns! Você subiu para o nível " + jogador.getNivel() + "!");
         }
     }
+    private void descansar() {
+    int energiaRecuperada = 30;
+    int energiaAtual = jogador.getEnergia();
+    int energiaMaxima = 100;
+
+    jogador.setEnergia(Math.min(energiaAtual + energiaRecuperada, energiaMaxima));
+    System.out.println("Você descansou e recuperou " + energiaRecuperada + " pontos de energia.");
+    System.out.println("Energia atual: " + jogador.getEnergia());
+}
+
 }

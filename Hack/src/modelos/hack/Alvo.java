@@ -1,4 +1,4 @@
-package modelos;
+package modelos.hack;
 
 import java.util.Random;
 
