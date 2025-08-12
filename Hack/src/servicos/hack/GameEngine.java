@@ -1,5 +1,5 @@
-
 package servicos.hack;
+import utilidades.hack.Util;
 import modelos.hack.Jogador;
 import modelos.hack.Missao;
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ public class GameEngine {
     }
 
     public void telaInicial() {
-        System.out.println("\n==============================");
-        System.out.println(" Bem-vindo ao HackSimulator ");
-        System.out.println("==============================");
+    Util.limparTela();
+    System.out.println(Util.destaque("Bem-vindo ao HackSimulator"));
+    Util.pausa(1);
         while (true) {
             System.out.println("1 - Login");
             System.out.println("2 - Cadastro");
@@ -50,7 +50,8 @@ public class GameEngine {
 
 
         public void cadastro() {
-            System.out.println("=== Cadastro de Jogador ===");
+        Util.limparTela();
+        System.out.println(Util.destaque("Cadastro de Jogador"));
             System.out.print("Digite seu nome: ");
             String nome = scanner.nextLine();
             System.out.print("Digite um usuário: ");
@@ -67,7 +68,8 @@ public class GameEngine {
         }
 
         public boolean login() {
-            System.out.println("=== Login ===");
+        Util.limparTela();
+        System.out.println(Util.destaque("Login"));
             System.out.print("Usuário: ");
             String usuario = scanner.nextLine();
             System.out.print("Senha: ");
@@ -85,7 +87,9 @@ public class GameEngine {
         }
 
     public void startGame() {
-        System.out.println("\nOlá, " + jogador.getNome() + "! Seja bem-vindo ao seu painel de hacker.");
+    Util.limparTela();
+    System.out.println(Util.destaque("Olá, " + jogador.getNome() + "! Seja bem-vindo ao seu painel de hacker."));
+    Util.pausa(1);
         carregarMissoes();
         mostrarMenu();
     }
@@ -138,8 +142,9 @@ public class GameEngine {
         }
     }
     private void loja() {
-        System.out.println("\n=== Loja de Itens ===");
-        System.out.println("Seu saldo: " + jogador.getOzzyCoin() + " Ozzy Coins");
+    Util.limparTela();
+    System.out.println(Util.destaque("Loja de Itens"));
+    System.out.println("Seu saldo: " + Util.formatOzzyCoin(jogador.getOzzyCoin()));
         System.out.println("1 - Energia extra (+30) - 30 Ozzy Coins");
         System.out.println("2 - Upgrade de nível (+1) - 100 Ozzy Coins");
         System.out.println("3 - Ferramenta de hack (chance de sucesso +20%) - 50 Ozzy Coins");
@@ -191,20 +196,20 @@ public class GameEngine {
         }
         System.out.print("Escolha o número da missão para iniciar ou 0 para voltar: ");
         String escolha = scanner.nextLine();
-        try {
-            int opcao = Integer.parseInt(escolha);
-            if (opcao == 0) {
-                return;
-            }
-            if (opcao < 1 || opcao > missoes.size()) {
-                System.out.println("Número inválido.");
-                return;
-            }
-            Missao selecionada = missoes.get(opcao - 1);
-            iniciarMissao(selecionada);
-        } catch (NumberFormatException e) {
+        if (!Util.isNumero(escolha)) {
             System.out.println("Entrada inválida. Por favor, digite um número.");
+            return;
         }
+        int opcao = Integer.parseInt(escolha);
+        if (opcao == 0) {
+            return;
+        }
+        if (opcao < 1 || opcao > missoes.size()) {
+            System.out.println("Número inválido.");
+            return;
+        }
+        Missao selecionada = missoes.get(opcao - 1);
+        iniciarMissao(selecionada);
     }
 
     private void iniciarMissao(Missao missao) {
@@ -212,9 +217,11 @@ public class GameEngine {
             System.out.println("Essa missão já foi concluída.");
             return;
         }
-        System.out.println("\nIniciando missão:");
-        missao.exibeMissao();
-        System.out.println("\nTentando atacar o alvo...");
+    Util.limparTela();
+    System.out.println(Util.destaque("Iniciando missão:"));
+    missao.exibeMissao();
+    Util.pausa(1);
+    System.out.println(Util.destaque("Tentando atacar o alvo..."));
         boolean respostaCorreta = false;
         int dificuldade = missao.getDificuldade();
         if (dificuldade <= 3) {
@@ -224,13 +231,15 @@ public class GameEngine {
             String tentativa = scanner.nextLine();
             respostaCorreta = tentativa.equals(String.valueOf(a + b));
         } else if (dificuldade <= 6) {
-            System.out.println("Desafio intermediário: Qual dessas opções é uma porta comum de SSH? (a) 21 (b) 22 (c) 80");
+            String codigo = Util.gerarCodigo(4);
+            System.out.println("Desafio intermediário: Digite o código exibido: " + codigo);
             String tentativa = scanner.nextLine();
-            respostaCorreta = tentativa.trim().equalsIgnoreCase("b") || tentativa.trim().equals("22");
+            respostaCorreta = tentativa.trim().equalsIgnoreCase(codigo);
         } else {
-            System.out.println("Desafio avançado: Complete a sequência: hack, h4ck, h4cK, ?");
+            String codigo = Util.gerarCodigo(6);
+            System.out.println("Desafio avançado: Digite o código exibido: " + codigo);
             String tentativa = scanner.nextLine();
-            respostaCorreta = tentativa.trim().equalsIgnoreCase("H4CK");
+            respostaCorreta = tentativa.trim().equalsIgnoreCase(codigo);
         }
         int energiaPerdida = 10 + dificuldade * 2;
         jogador.setEnergia(jogador.getEnergia() - energiaPerdida);
