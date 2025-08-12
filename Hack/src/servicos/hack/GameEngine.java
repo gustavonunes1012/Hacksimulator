@@ -56,7 +56,7 @@ public class GameEngine {
 jogador.exibeStatus();                    
                     break;
                 case "3":
-                    descansar();
+                        descansar();
                     break;
                     case "4":
                     System.out.println("Saindo...");
@@ -102,15 +102,14 @@ jogador.exibeStatus();
         System.out.println("\nIniciando missão:");
         missao.exibeMissao();
         System.out.println("\nTentando atacar o alvo...");
-        // Perde energia ao tentar missão
-        int energiaPerdida = 10 + missao.getDificuldade() * 2;
-        jogador.setEnergia(jogador.getEnergia() - energiaPerdida);
-        System.out.println("Você perdeu " + energiaPerdida + " de energia ao tentar a missão.");
-        if (jogador.getEnergia() <= 0) {
-            System.out.println("Você ficou sem energia! Descanse para continuar jogando.");
-            jogador.setEnergia(0);
-            return;
-        }
+            int energiaPerdida = 10 + missao.getDificuldade() * 2;
+            jogador.setEnergia(jogador.getEnergia() - energiaPerdida);
+            System.out.println("Você perdeu " + energiaPerdida + " de energia ao tentar a missão.");
+            if (jogador.getEnergia() <= 0) {
+                System.out.println("Você ficou sem energia! Descanse para continuar jogando.");
+                jogador.setEnergia(0);
+                return;
+            }
         boolean sucesso = executarAtaque(missao);
         if (sucesso) {
             System.out.println("Parabéns! Missão concluída.");
@@ -124,7 +123,6 @@ jogador.exibeStatus();
     private boolean executarAtaque(Missao missao) {
     int nivelJogador = jogador.getNivel();
     int dificuldade = missao.getDificuldade();
-    // Probabilidade base: jogador precisa ter nível igual ou maior que a dificuldade para 50% de chance
     double probabilidade = 0.5 + 0.05 * (nivelJogador - dificuldade);
     if (probabilidade < 0.1) probabilidade = 0.1;
     if (probabilidade > 0.95) probabilidade = 0.95;
@@ -133,24 +131,26 @@ jogador.exibeStatus();
     }
 
     private void atualizarJogador(Missao missao) {
-        int xpBase = missao.getRecompensaExp();
-        int xpBonus = missao.getDificuldade() * 10;
-        int xpGanho = xpBase + xpBonus;
+    int xpGanho = missao.getDificuldade() * 20;
         jogador.setExp(jogador.getExp() + xpGanho);
         System.out.println("Você ganhou " + xpGanho + " de experiência!");
-        while (jogador.getExp() >= 100) {
+        int nivelAtual = jogador.getNivel();
+        int xpParaProximoNivel = 100 + (nivelAtual - 1) * 50;
+        while (jogador.getExp() >= xpParaProximoNivel) {
             jogador.setNivel(jogador.getNivel() + 1);
-            jogador.setExp(jogador.getExp() - 100);
+            jogador.setExp(jogador.getExp() - xpParaProximoNivel);
             System.out.println("Parabéns! Você subiu para o nível " + jogador.getNivel() + "!");
+            nivelAtual = jogador.getNivel();
+            xpParaProximoNivel = 100 + (nivelAtual - 1) * 50;
         }
     }
     private void descansar() {
-    int energiaRecuperada = 30;
+    int energiaRecuperada = 5;
     int energiaAtual = jogador.getEnergia();
     int energiaMaxima = 100;
 
     jogador.setEnergia(Math.min(energiaAtual + energiaRecuperada, energiaMaxima));
-    System.out.println("Você descansou e recuperou " + energiaRecuperada + " pontos de energia.");
+        System.out.println("Você descansou e recuperou 5 de energia.");
     System.out.println("Energia atual: " + jogador.getEnergia());
 }
 
