@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class GameEngine {
     private Jogador jogador;
     private List<Missao> missoes;
+    private List<Missao> historicoMissoes = new ArrayList<>();
     private Scanner scanner;
 
     public GameEngine(Jogador jogador) {
@@ -102,21 +103,39 @@ jogador.exibeStatus();
         System.out.println("\nIniciando missão:");
         missao.exibeMissao();
         System.out.println("\nTentando atacar o alvo...");
-            int energiaPerdida = 10 + missao.getDificuldade() * 2;
-            jogador.setEnergia(jogador.getEnergia() - energiaPerdida);
-            System.out.println("Você perdeu " + energiaPerdida + " de energia ao tentar a missão.");
-            if (jogador.getEnergia() <= 0) {
-                System.out.println("Você ficou sem energia! Descanse para continuar jogando.");
-                jogador.setEnergia(0);
-                return;
-            }
-        boolean sucesso = executarAtaque(missao);
+        boolean respostaCorreta = false;
+        int dificuldade = missao.getDificuldade();
+        if (dificuldade <= 3) {
+            int a = 2 * dificuldade;
+            int b = dificuldade + 3;
+            System.out.println("Desafio fácil: Qual a soma de " + a + " + " + b + "?");
+            String tentativa = scanner.nextLine();
+            respostaCorreta = tentativa.equals(String.valueOf(a + b));
+        } else if (dificuldade <= 6) {
+            System.out.println("Desafio intermediário: Qual dessas opções é uma porta comum de SSH? (a) 21 (b) 22 (c) 80");
+            String tentativa = scanner.nextLine();
+            respostaCorreta = tentativa.trim().equalsIgnoreCase("b") || tentativa.trim().equals("22");
+        } else {
+            System.out.println("Desafio avançado: Complete a sequência: hack, h4ck, h4cK, ?");
+            String tentativa = scanner.nextLine();
+            respostaCorreta = tentativa.trim().equalsIgnoreCase("H4CK");
+        }
+        int energiaPerdida = 10 + dificuldade * 2;
+        jogador.setEnergia(jogador.getEnergia() - energiaPerdida);
+        System.out.println("Você perdeu " + energiaPerdida + " de energia ao tentar a missão.");
+        if (jogador.getEnergia() <= 0) {
+            System.out.println("Você ficou sem energia! Descanse para continuar jogando.");
+            jogador.setEnergia(0);
+            return;
+        }
+        boolean sucesso = respostaCorreta && executarAtaque(missao);
         if (sucesso) {
             System.out.println("Parabéns! Missão concluída.");
             missao.setMissaoCompleta(true);
             atualizarJogador(missao);
+            historicoMissoes.add(missao);
         } else {
-            System.out.println("Falha no ataque. Tente novamente.");
+            System.out.println("Falha no ataque. Resposta incorreta ou você não teve sucesso no hack. Tente novamente.");
         }
     }
 
