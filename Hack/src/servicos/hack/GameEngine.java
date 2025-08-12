@@ -102,6 +102,15 @@ jogador.exibeStatus();
         System.out.println("\nIniciando missão:");
         missao.exibeMissao();
         System.out.println("\nTentando atacar o alvo...");
+        // Perde energia ao tentar missão
+        int energiaPerdida = 10 + missao.getDificuldade() * 2;
+        jogador.setEnergia(jogador.getEnergia() - energiaPerdida);
+        System.out.println("Você perdeu " + energiaPerdida + " de energia ao tentar a missão.");
+        if (jogador.getEnergia() <= 0) {
+            System.out.println("Você ficou sem energia! Descanse para continuar jogando.");
+            jogador.setEnergia(0);
+            return;
+        }
         boolean sucesso = executarAtaque(missao);
         if (sucesso) {
             System.out.println("Parabéns! Missão concluída.");
