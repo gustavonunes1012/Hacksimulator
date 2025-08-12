@@ -113,14 +113,20 @@ jogador.exibeStatus();
     }
 
     private boolean executarAtaque(Missao missao) {
-        int chanceSucesso = jogador.getNivel() * 10;
-        int dificuldade = missao.getDificuldade() * 10;
-        int resultado = (int) (Math.random() * 100);
-        return resultado + chanceSucesso >= dificuldade;
+    int nivelJogador = jogador.getNivel();
+    int dificuldade = missao.getDificuldade();
+    // Probabilidade base: jogador precisa ter nível igual ou maior que a dificuldade para 50% de chance
+    double probabilidade = 0.5 + 0.05 * (nivelJogador - dificuldade);
+    if (probabilidade < 0.1) probabilidade = 0.1;
+    if (probabilidade > 0.95) probabilidade = 0.95;
+    double resultado = Math.random();
+    return resultado < probabilidade;
     }
 
     private void atualizarJogador(Missao missao) {
-        int xpGanho = missao.getRecompensaExp();
+        int xpBase = missao.getRecompensaExp();
+        int xpBonus = missao.getDificuldade() * 10;
+        int xpGanho = xpBase + xpBonus;
         jogador.setExp(jogador.getExp() + xpGanho);
         System.out.println("Você ganhou " + xpGanho + " de experiência!");
         while (jogador.getExp() >= 100) {
