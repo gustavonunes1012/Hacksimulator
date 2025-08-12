@@ -5,70 +5,132 @@ import modelos.hack.Missao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.HashMap;
+import modelos.hack.Usuario;
 
 public class GameEngine {
-    private Jogador jogador;
-    private List<Missao> missoes;
-    private List<Missao> historicoMissoes = new ArrayList<>();
-    private Scanner scanner;
+    // Classe GameEngine corretamente estruturada
+        private Jogador jogador;
+        private List<Missao> missoes;
+        private List<Missao> historicoMissoes = new ArrayList<>();
+        private Scanner scanner;
+        private HashMap<String, Usuario> usuarios = new HashMap<>(); // usuario -> Usuario
 
-    public GameEngine(Jogador jogador) {
-        this.jogador = jogador;
-        this.missoes = new ArrayList<>();
-        this.scanner = new Scanner(System.in);
-    }
+        public GameEngine(Jogador jogador) {
+            this.jogador = jogador;
+            this.missoes = new ArrayList<>();
+            this.scanner = new Scanner(System.in);
+        }
 
-    public void startGame() {
-        System.out.println("Bem-vindo ao HackEthic, " + jogador.getNome() + "!");
-        carregarMissoes();
-        mostrarMenu();
-    }
-
-    private void carregarMissoes() {
-    System.out.println("Carregando missões...");
-    missoes.clear();
-    missoes.add(new Missao("Invadir o Servidor Alpha e coletar dados sensíveis", new modelos.hack.Alvo("Servidor Alpha", "192.168.1.10", 5), 3, 100, false));
-    missoes.add(new Missao("Hackear o Banco Central e transferir fundos", new modelos.hack.Alvo("Banco Central", "10.0.0.1", 8), 5, 250, false));
-    missoes.add(new Missao("Obter acesso ao sistema de câmeras da cidade", new modelos.hack.Alvo("Central de Câmeras", "172.16.0.5", 4), 2, 80, false));
-    missoes.add(new Missao("Desativar firewall de empresa concorrente", new modelos.hack.Alvo("Firewall CorpX", "192.168.2.20", 6), 4, 120, false));
-    missoes.add(new Missao("Roubar dados de pesquisa de laboratório secreto", new modelos.hack.Alvo("Lab Secreto", "10.10.10.10", 7), 6, 300, false));
-    missoes.add(new Missao("Interceptar comunicações de políticos", new modelos.hack.Alvo("Gabinete Político", "192.168.100.100", 5), 3, 110, false));
-    missoes.add(new Missao("Invadir sistema de votação eletrônica", new modelos.hack.Alvo("Urna Eletrônica", "10.0.0.50", 9), 7, 400, false));
-    missoes.add(new Missao("Obter acesso ao servidor de streaming", new modelos.hack.Alvo("Servidor Streaming", "172.16.1.1", 3), 2, 70, false));
-    missoes.add(new Missao("Sabotar sistema de controle de energia", new modelos.hack.Alvo("Usina Elétrica", "192.168.3.33", 8), 6, 320, false));
-    missoes.add(new Missao("Descobrir senha do CEO da MegaCorp", new modelos.hack.Alvo("MegaCorp CEO", "10.1.1.1", 4), 3, 90, false));
-    System.out.println("Missões carregadas com sucesso!");
-    }
-
-    private void mostrarMenu() {
-        while (true) {
-            System.out.println("\n=== Menu Principal ===");
-            System.out.println("1 - Listar missões disponíveis");
-            System.out.println("2 - Exibir status do jogador");
-            System.out.println("3 - Descansar / Recuperar energia");
-            System.out.println("4 - Sair");
-            System.out.print("Escolha uma opção: ");
-            String input = scanner.nextLine();
-            switch (input) {
-                case "1":
-                    listarMissoes();
-                    break;
-                case "2":
-jogador.exibeStatus();                    
-                    break;
-                case "3":
-                        descansar();
-                    break;
-                    case "4":
+        public void telaInicial() {
+            System.out.println("=== Bem-vindo ao HackSimulator ===");
+            while (true) {
+                System.out.println("1 - Login");
+                System.out.println("2 - Cadastro");
+                System.out.println("3 - Sair");
+                System.out.print("Escolha uma opção: ");
+                String op = scanner.nextLine();
+                if (op.equals("1")) {
+                    if (login()) {
+                        startGame();
+                        break;
+                    }
+                } else if (op.equals("2")) {
+                    cadastro();
+                } else if (op.equals("3")) {
                     System.out.println("Saindo...");
-                    return;
-                
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                    break;
+                } else {
+                    System.out.println("Opção inválida.");
+                }
             }
         }
-    }
 
+        public void cadastro() {
+            System.out.println("=== Cadastro de Jogador ===");
+            System.out.print("Digite seu nome: ");
+            String nome = scanner.nextLine();
+            System.out.print("Digite um usuário: ");
+            String usuario = scanner.nextLine();
+            if (usuarios.containsKey(usuario)) {
+                System.out.println("Usuário já existe. Tente outro.");
+                return;
+            }
+            System.out.print("Digite uma senha: ");
+            String senha = scanner.nextLine();
+            Usuario novoUsuario = new Usuario(nome, usuario, senha);
+            usuarios.put(usuario, novoUsuario);
+            System.out.println("Cadastro realizado com sucesso!");
+        }
+
+        public boolean login() {
+            System.out.println("=== Login ===");
+            System.out.print("Usuário: ");
+            String usuario = scanner.nextLine();
+            System.out.print("Senha: ");
+            String senha = scanner.nextLine();
+            if (usuarios.containsKey(usuario)) {
+                Usuario user = usuarios.get(usuario);
+                if (user.getSenha().equals(senha)) {
+                    jogador = new Jogador(user.getNome()); // Ajuste conforme sua classe Jogador
+                    System.out.println("Login realizado! Bem-vindo, " + user.getNome() + ".");
+                    return true;
+                }
+            }
+            System.out.println("Usuário ou senha incorretos.");
+            return false;
+        }
+
+        public void startGame() {
+            System.out.println("Bem-vindo ao HackSimulator, " + jogador.getNome() + "!");
+            carregarMissoes();
+            mostrarMenu();
+        }
+
+        public void carregarMissoes() {
+            System.out.println("Carregando missões...");
+            missoes.clear();
+            missoes.add(new Missao("Invadir o Servidor Alpha e coletar dados sensíveis", new modelos.hack.Alvo("Servidor Alpha", "192.168.1.10", 5), 3, 100, false));
+            missoes.add(new Missao("Hackear o Banco Central e transferir fundos", new modelos.hack.Alvo("Banco Central", "10.0.0.1", 8), 5, 250, false));
+            missoes.add(new Missao("Obter acesso ao sistema de câmeras da cidade", new modelos.hack.Alvo("Central de Câmeras", "172.16.0.5", 4), 2, 80, false));
+            missoes.add(new Missao("Desativar firewall de empresa concorrente", new modelos.hack.Alvo("Firewall CorpX", "192.168.2.20", 6), 4, 120, false));
+            missoes.add(new Missao("Roubar dados de pesquisa de laboratório secreto", new modelos.hack.Alvo("Lab Secreto", "10.10.10.10", 7), 6, 300, false));
+            missoes.add(new Missao("Interceptar comunicações de políticos", new modelos.hack.Alvo("Gabinete Político", "192.168.100.100", 5), 3, 110, false));
+            missoes.add(new Missao("Invadir sistema de votação eletrônica", new modelos.hack.Alvo("Urna Eletrônica", "10.0.0.50", 9), 7, 400, false));
+            missoes.add(new Missao("Obter acesso ao servidor de streaming", new modelos.hack.Alvo("Servidor Streaming", "172.16.1.1", 3), 2, 70, false));
+            missoes.add(new Missao("Sabotar sistema de controle de energia", new modelos.hack.Alvo("Usina Elétrica", "192.168.3.33", 8), 6, 320, false));
+            missoes.add(new Missao("Descobrir senha do CEO da MegaCorp", new modelos.hack.Alvo("MegaCorp CEO", "10.1.1.1", 4), 3, 90, false));
+            System.out.println("Missões carregadas com sucesso!");
+        }
+
+        public void mostrarMenu() {
+            while (true) {
+                System.out.println("\n=== Menu Principal ===");
+                System.out.println("Olá, " + jogador.getNome() + "! Seja bem-vindo ao seu painel de hacker.");
+                System.out.println("1 - Listar missões disponíveis");
+                System.out.println("2 - Exibir status do jogador");
+                System.out.println("3 - Descansar / Recuperar energia");
+                System.out.println("4 - Sair");
+                System.out.print("Escolha uma opção: ");
+                String input = scanner.nextLine();
+                switch (input) {
+                    case "1":
+                        listarMissoes();
+                        break;
+                    case "2":
+                        jogador.exibeStatus();                    
+                        break;
+                    case "3":
+                        descansar();
+                        break;
+                    case "4":
+                        System.out.println("Saindo...");
+                        return;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            }
+        }
     private void listarMissoes() {
         System.out.println("\n=== Missões Disponíveis ===");
         for (int i = 0; i < missoes.size(); i++) {
